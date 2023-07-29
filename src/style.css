@@ -1,0 +1,15 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root,
+.App {
+  min-height: 900px;
+}
+
+body {
+  background-color: #f7f7f7;
+}

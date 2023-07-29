@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300&family=Roboto&family=Roboto+Mono:wght@300&family=Zen+Dots&display=swap');
+
+.Card {
+  width: 451px;
+  min-height: 279px;
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.15);
+  padding: 0px 0px;
+}
+
+.ant-image {
+  height: 279px;
+}
+
+.CardCol {
+  display: flex;
+  justify-content: center;
+}
+
+.filmDescribe {
+  padding: 10px 20px 10px 10px;
+}
+
+.filmTitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 20px;
+}
+
+.filmDate {
+  color: rgba(130, 126, 126, 1);
+
+  font-size: 12px;
+}
+
+.filmTags,
+.filmAbout {
+}
