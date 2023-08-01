@@ -18,9 +18,14 @@ class ServiceTMDB {
     return await res.json()
   }
 
-  async getMovies(movieName) {
-    const res = await this.getResource(`https://api.themoviedb.org/3/search/movie?query=${movieName}`)
-    return res.results.map(this._transformCard)
+  async getMovies(movieName, page) {
+    const res = await this.getResource(
+      `https://api.themoviedb.org/3/search/movie?query=${movieName}&include_adult=false&language=en-US&page=${page}`
+    )
+    return {
+      cards: res.results.map(this._transformCard),
+      totalResults: res.total_results,
+    }
   }
 
   _transformCard(card) {
