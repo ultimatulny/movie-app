@@ -1,5 +1,5 @@
 .App {
-  width: 1010px;
+  max-width: 1010px;
   margin: 0 auto;
   background-color: #ffffff;
   height: 100%;
@@ -7,11 +7,32 @@
 }
 
 .searchInput {
-  margin: 0 25px;
+  margin-top: 20px;
 }
 
 .paginationBlock {
   width: max-content;
   margin: 0 auto;
   margin-top: 35px;
+}
+
+.tabs .ant-tabs-nav-list .ant-tabs-tab {
+  padding: 16px 16px;
+}
+
+.tabs.ant-tabs.ant-tabs-top .ant-tabs-nav {
+  width: max-content;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 1010px) {
+  .App {
+    width: 100%;
+    padding: 0 16px;
+    box-sizing: border-box;
+  }
+  .searchInput {
+    width: 100%;
+    box-sizing: border-box;
+  }
 }

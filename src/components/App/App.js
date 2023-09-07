@@ -1,10 +1,11 @@
 import React from 'react'
-import { Row, Spin, Alert, Space, Input, Pagination } from 'antd'
-import { debounce } from 'lodash'
+import { Tabs } from 'antd'
 
-import Card from '../Card'
-import ServiceTMDB from '../../services/serviceTMDB'
 import NetworkStatus from '../NetworkStatus'
+import SearchPage from '../SearchPage'
+import RatedPage from '../RatedPage'
+import ServiceTMDB from '../../services/serviceTMDB'
+import { ProviderTMDB } from '../TMDBContext'
 
 import './App.css'
 
@@ -12,98 +13,81 @@ export default class App extends React.Component {
   constructor() {
     super()
     this.state = {
-      cards: [],
-      loading: true,
-      error: false,
-      searchValue: 'return',
-      currentPage: 1,
-      totalFilms: 1,
+      guest_id: null,
+      genres: null,
+      rated_films: {},
     }
   }
   TMDB = new ServiceTMDB()
   componentDidMount() {
-    this.searchFilms(this.state.searchValue, this.state.currentPage)
-  }
-
-  renderError(errorText) {
-    return (
-      <Space
-        direction="vertical"
-        style={{
-          width: '100%',
-        }}
-      >
-        <Alert message="Error" description={errorText} type="error" showIcon />
-      </Space>
-    )
-  }
-
-  searchFilms = debounce((filmName, page) => {
-    this.TMDB.getMovies(filmName, page)
-      .then((res) => {
-        this.setState({
-          cards: res.cards.map((elem) => <Card key={elem.id}>{elem}</Card>),
-          loading: false,
-          totalFilms: res.totalResults,
-        })
+    this.TMDB.createGuestSession().then((result) => {
+      this.setState({
+        guest_id: result.guest_session_id,
       })
-      .catch((err) => {
-        this.setState({
-          error: err,
-        })
-      })
-  }, 1000)
-
-  changeSearch = (e) => {
-    const searchFilmName = e.target.value.trim()
-    this.setState({
-      searchValue: searchFilmName,
-      loading: true,
     })
-    if (searchFilmName === '') {
-      this.searchFilms('return', this.state.currentPage)
-    } else {
-      this.searchFilms(searchFilmName, this.state.currentPage)
-    }
+    this.TMDB.getGenres().then((result) => {
+      this.setState({
+        genres: result,
+      })
+    })
   }
 
-  onChangePagination = (page) => {
-    this.setState(
-      {
-        currentPage: page,
-        loading: true,
-      },
-      () => {
-        this.searchFilms(this.state.searchValue, this.state.currentPage)
-      }
-    )
+  addRating = (filmId, value) => {
+    this.TMDB.addRating(filmId, this.state.guest_id, value).then(() => {
+      const ratedFilms = { ...this.state.rated_films }
+      ratedFilms[filmId] = value
+
+      this.setState(
+        {
+          rated_films: ratedFilms,
+        },
+        () => {
+          console.log(this.state.rated_films)
+        }
+      )
+    })
+  }
+
+  getRatedFilms = (page) => {
+    this.TMDB.getRatedMovies(this.state.guest_id, page).then((result) => {
+      return result
+    })
   }
 
   render() {
     return (
       <div className="App">
-        {<NetworkStatus />}
-
-        {this.state.error ? this.renderError(this.state.error) : null}
-        <Row gutter={[0, 38]} justify="center">
-          <Input
-            placeholder="Type to search..."
-            className="searchInput"
-            value={this.state.searchValue}
-            onChange={this.changeSearch}
+        <ProviderTMDB
+          value={{
+            TMDB: this.TMDB,
+            genres: this.state.genres,
+            addRating: this.addRating,
+            ratedFilms: this.state.rated_films,
+            super: 'super',
+          }}
+        >
+          <Tabs
+            defaultActiveKey="1"
+            items={[
+              {
+                key: '1',
+                label: 'Search',
+                children: <SearchPage />,
+              },
+              {
+                key: '2',
+                label: 'Rated',
+                children: this.state.guest_id ? <RatedPage guest_id={this.state.guest_id} /> : null,
+              },
+            ]}
+            centered
+            size="middle"
+            destroyInactiveTabPane
+            className="tabs"
+            tabBarExtraContent
           />
-          {this.state.loading ? <Spin /> : this.state.cards}
-          {this.state.cards.length === 0 && !this.state.loading ? (
-            <Alert message="По вашему запросу ничего не найдено" type="warning" />
-          ) : null}
-        </Row>
-        <Pagination
-          defaultCurrent={this.state.currentPage}
-          onChange={this.onChangePagination}
-          total={this.state.totalFilms}
-          className="paginationBlock"
-          pageSize="20"
-        />
+          {<NetworkStatus />}
+        </ProviderTMDB>
       </div>
     )
   }

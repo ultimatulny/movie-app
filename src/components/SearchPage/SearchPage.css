@@ -1,0 +1,13 @@
+.mainPage {
+  max-width: 938px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  row-gap: 37px;
+  column-gap: 36px;
+}
+
+.searchInput {
+  margin-bottom: 34px;
+}

@@ -2,35 +2,59 @@
 
 .Card {
   width: 451px;
-  min-height: 279px;
-  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.15);
-  padding: 0px 0px;
-}
-
-.ant-image {
   height: 279px;
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.15);
+  font-family: 'Inter', sans-serif;
+  position: relative;
 }
 
-.CardCol {
-  display: flex;
-  justify-content: center;
-}
-
-.filmDescribe {
-  padding: 10px 20px 10px 10px;
+.Card img {
+  height: 100%;
+  width: 183px;
+  float: left;
+  margin-right: 20px;
 }
 
 .filmTitle {
-  font-family: 'Inter', sans-serif;
+  max-width: 83%;
   font-size: 20px;
 }
 
-.filmDate {
-  color: rgba(130, 126, 126, 1);
+.filmTitleRating {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 10px 0 0;
+}
 
+.filmTags {
+  margin-top: 8px;
+}
+
+.filmAbout {
+  margin-top: 8px;
   font-size: 12px;
 }
 
-.filmTags,
-.filmAbout {
+.filmRate {
+  position: absolute;
+  bottom: 10px;
+}
+
+@media screen and (max-width: 480px) {
+  .Card {
+    width: 388px;
+    height: 245px;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  .filmTitleRating {
+    padding: 0;
+  }
+  .Card img {
+    height: 40%;
+    width: auto;
+  }
+  .filmRate {
+    right: 10px;
+  }
 }

@@ -1,9 +1,18 @@
-import { Row, Col, Image, Tag } from 'antd'
+import React, { useState } from 'react'
+import { Tag, Rate } from 'antd'
 import { format, parseISO } from 'date-fns'
+
+import { ConsumerTMDB } from '../TMDBContext'
+import Rating from '../Rating'
 
 import './Card.css'
 
 const Card = (props) => {
+  const [rate, setRate] = useState(0)
+  const setFilmRate = (e) => {
+    setRate(e)
+  }
+
   let imageUrl
   if (props.children.image === null) {
     imageUrl =
@@ -27,30 +36,85 @@ const Card = (props) => {
     return truncatedText
   }
 
+  // return (
+  //   <ConsumerTMDB>
+  //     {({ genres, addRating, ratedFilms }) => {
+  //       return (
+  //         <Col span={{ xs: 24, sm: 24, md: 24, lg: 12 }} className="CardCol">
+  //           <div className="Card">
+  //             <Row style={{ height: '100%' }}>
+  //               <Col span={10} style={{ height: '100%' }}>
+  //                 <Image width={183} src={imageUrl} style={{ height: '100%' }} />
+  //               </Col>
+  //               <Col span={14} className="filmDescribe">
+  //                 <Row gutter={[0, 7]}>
+  //                   <Col span={24} className="filmHeader">
+  //                     <h2 className="filmTitle">{props.children.title}</h2>
+  //                     <Rating rating={props.children.rate} />
+  //                   </Col>
+  //                   <Col span={24} className="filmDate">
+  //                     {date}
+  //                   </Col>
+  //                   <div className="filmTags">
+  //                     {genres.map((el, i) =>
+  //                       props.children.tags.includes(el.id) ? <Tag key={i}>{el.name}</Tag> : null
+  //                     )}
+  //                   </div>
+  //                   <div className="filmAbout">{truncateDescription(props.children.about, 100)}</div>
+  //                   <Rate
+  //                     allowHalf
+  //                     count={10}
+  //                     style={{ fontSize: '16px' }}
+  //                     onChange={(value) => {
+  //                       setFilmRate(value)
+  //                       addRating(props.filmId, value)
+  //                     }}
+  //                     value={props.filmId in ratedFilms ? ratedFilms[props.filmId] : rate}
+  //                   />
+  //                 </Row>
+  //               </Col>
+  //             </Row>
+  //           </div>
+  //         </Col>
+  //       )
+  //     }}
+  //   </ConsumerTMDB>
+  // )
   return (
-    <Col span={12} className="CardCol">
-      <div className="Card">
-        <Row style={{ height: '100%' }}>
-          <Col span={10} style={{ height: '100%' }}>
-            <Image width={183} src={imageUrl} style={{ height: '100%' }} />
-          </Col>
-          <Col span={14} className="filmDescribe">
-            <Row gutter={[0, 7]}>
-              <Col span={24}>
+    <ConsumerTMDB>
+      {({ genres, addRating, ratedFilms }) => {
+        return (
+          <div className="Card">
+            <img src={imageUrl} alt="Film poster" />
+            <div className="card_header">
+              <div className="filmTitleRating">
                 <h2 className="filmTitle">{props.children.title}</h2>
-              </Col>
-              <div className="filmDate">{date}</div>
-              <div className="filmTags">
-                <Tag>Action</Tag>
-                <Tag>Drama</Tag>
-                <Tag>18+</Tag>
+                <Rating rating={props.children.rate} />
               </div>
-              <div className="filmAbout">{truncateDescription(props.children.about, 160)}</div>
-            </Row>
-          </Col>
-        </Row>
-      </div>
-    </Col>
+
+              {date}
+
+              <div className="filmTags">
+                {genres.map((el, i) => (props.children.tags.includes(el.id) ? <Tag key={i}>{el.name}</Tag> : null))}
+              </div>
+            </div>
+
+            <div className="filmAbout">{truncateDescription(props.children.about, 100)}</div>
+            <Rate
+              className="filmRate"
+              allowHalf
+              count={10}
+              style={{ fontSize: '16px' }}
+              onChange={(value) => {
+                setFilmRate(value)
+                addRating(props.filmId, value)
+              }}
+              value={props.filmId in ratedFilms ? ratedFilms[props.filmId] : rate}
+            />
+          </div>
+        )
+      }}
+    </ConsumerTMDB>
   )
 }
 
