@@ -2,7 +2,7 @@ import React from 'react'
 import { Spin, Alert, Space, Pagination } from 'antd'
 
 import Card from '../Card'
-import ServiceTMDB from '../../services/serviceTMDB'
+import { getRatedMovies } from '../../services/serviceTMDB'
 
 import './RatedPage.css'
 
@@ -17,13 +17,13 @@ export default class RatedPage extends React.Component {
       totalFilms: 1,
     }
   }
-  TMDB = new ServiceTMDB()
+
   componentDidMount() {
     this.getRatedFilms(1)
   }
 
   getRatedFilms = (page) => {
-    this.TMDB.getRatedMovies(this.props.guest_id, page).then((res) => {
+    getRatedMovies(this.props.guest_id, page).then((res) => {
       this.setState({
         cards: res.cards.map((elem) => (
           <Card key={elem.id} filmId={elem.id}>

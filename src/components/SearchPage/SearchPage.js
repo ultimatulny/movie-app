@@ -3,7 +3,7 @@ import { Spin, Alert, Space, Input, Pagination } from 'antd'
 import { debounce } from 'lodash'
 
 import Card from '../Card'
-import ServiceTMDB from '../../services/serviceTMDB'
+import { getMovies } from '../../services/serviceTMDB'
 
 import './SearchPage.css'
 
@@ -19,7 +19,7 @@ export default class SearchPage extends React.Component {
       totalFilms: 1,
     }
   }
-  TMDB = new ServiceTMDB()
+
   componentDidMount() {
     this.searchFilms(this.state.searchValue, this.state.currentPage)
   }
@@ -38,7 +38,7 @@ export default class SearchPage extends React.Component {
   }
 
   searchFilms = debounce((filmName, page) => {
-    this.TMDB.getMovies(filmName, page)
+    getMovies(filmName, page)
       .then((res) => {
         this.setState({
           cards: res.cards.map((elem) => (
